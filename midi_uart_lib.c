@@ -35,6 +35,7 @@
 #include "pico/binary_info.h"
 #include "pico/sync.h"
 #include "ring_buffer_lib.h"
+#include "midi_uart_lib_config.h"
 #include "midi_uart_lib.h"
 
 #define MIDI_UART_RING_BUFFER_LENGTH 128
@@ -52,7 +53,7 @@ typedef struct MIDI_UART_S {
 } MIDI_UART_T;
 
 #ifndef SERIAL_PORT_MIDI_NUM_UARTS
-#define SERIAL_PORT_MIDI_NUM_UARTS 1
+#error "projects that use this library must define SERIAL_PORT_MIDI_NUM_UARTS in midi_uart_lib_config.h"
 #endif
 static void on_midi_uart_irq(MIDI_UART_T *midi_uart);
 #if SERIAL_PORT_MIDI_NUM_UARTS==1
