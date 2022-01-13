@@ -29,9 +29,13 @@
 
 #ifndef MIDI_UART_LIB
 #define MIDI_UART_LIB
+
+
 #include <stdint.h>
 #include "ring_buffer_lib.h"
-
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
  * @brief Set up the defined UART for use with MIDI
  * @param uartnum is either 0 or 1 for UART0 or UART1
@@ -70,5 +74,8 @@ uint8_t midi_uart_write_tx_buffer(void *instance, uint8_t *buffer, RING_BUFFER_S
  * @param instance is a pointer to this MIDI UART instance
  */
 void midi_uart_drain_tx_buffer(void *instance);
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MIDI_UART_LIB
