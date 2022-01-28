@@ -52,13 +52,17 @@ typedef struct MIDI_UART_S {
     uint8_t midi_uart_tx_buf[MIDI_UART_RING_BUFFER_LENGTH];
 } MIDI_UART_T;
 
-#ifndef SERIAL_PORT_MIDI_NUM_UARTS
-#error "projects that use this library must define SERIAL_PORT_MIDI_NUM_UARTS in midi_uart_lib_config.h"
+#ifndef MIDI_UART_LIB_NUM_UARTS
+#error "projects that use this library must define MIDI_UART_LIB_NUM_UARTS in midi_uart_lib_config.h"
 #endif
+#ifndef MIDI_UART_LIB_BAUD_RATE
+#error "projects that use this library must define MIDI_UART_LIB_BAUD_RATE in midi_uart_lib_config.h"
+#endif
+
 static void on_midi_uart_irq(MIDI_UART_T *midi_uart);
-#if SERIAL_PORT_MIDI_NUM_UARTS==1
+#if MIDI_UART_LIB_NUM_UARTS==1
 static MIDI_UART_T midi_uart1;
-#elif SERIAL_PORT_MIDI_NUM_UARTS==2
+#elif MIDI_UART_LIB_NUM_UARTS==2
 static MIDI_UART_T midi_uart0, midi_uart1;
 
 static void on_midi_uart0_irq()
@@ -66,7 +70,7 @@ static void on_midi_uart0_irq()
     on_midi_uart_irq(&midi_uarts0);
 }
 #else
-#error "NEED EITHER 1 OR 2 SERIAL_PORT_MIDI_NUM_UARTS"
+#error "NEED EITHER 1 OR 2 MIDI_UART_LIB_NUM_UARTS"
 #endif
 
 static void on_midi_uart1_irq()
@@ -104,7 +108,7 @@ static void on_midi_uart_irq(MIDI_UART_T *midi_uart)
 
 void *midi_uart_configure(uint8_t uartnum, uint8_t txgpio, uint8_t rxgpio)
 {
-#if SERIAL_PORT_MIDI_NUM_UARTS == 2
+#if MIDI_UART_LIB_NUM_UARTS == 2
     assert(uartnum < 2);
     midi_uart0.midi_uart = uart0;
     midi_uart0.uart_irq = UART0_IRQ;
@@ -119,7 +123,7 @@ void *midi_uart_configure(uint8_t uartnum, uint8_t txgpio, uint8_t rxgpio)
         midi_uart = &midi_uart1;
         irq_set_exclusive_handler(midi_uart->midi_uart_irq, on_midi_uart1_irq);
     }
-#if SERIAL_PORT_MIDI_NUM_UARTS == 2
+#if MIDI_UART_LIB_NUM_UARTS == 2
     else if (uartnum == 0) {
         midi_uart = &midi_uart0;
         irq_set_exclusive_handler(midi_uart->midi_uart_irq, on_midi_uart1_irq);
@@ -129,7 +133,7 @@ void *midi_uart_configure(uint8_t uartnum, uint8_t txgpio, uint8_t rxgpio)
     midi_uart->midi_uart_rx_gpio = rxgpio;
     uart_inst_t * const uartinst;
     // Set up the UART hardware
-    uint32_t midi_baud = uart_init(midi_uart->midi_uart, 31250);
+    uint32_t midi_baud = uart_init(midi_uart->midi_uart, MIDI_UART_LIB_BAUD_RATE);
     uart_set_format(midi_uart->midi_uart, 8, 1, UART_PARITY_NONE);
     uart_set_hw_flow(midi_uart->midi_uart, false, false);
     uart_set_fifo_enabled(midi_uart->midi_uart, false);
