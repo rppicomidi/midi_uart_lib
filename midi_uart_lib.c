@@ -131,9 +131,8 @@ void *midi_uart_configure(uint8_t uartnum, uint8_t txgpio, uint8_t rxgpio)
 #endif
     midi_uart->midi_uart_tx_gpio = txgpio;
     midi_uart->midi_uart_rx_gpio = rxgpio;
-    uart_inst_t * const uartinst;
     // Set up the UART hardware
-    uint32_t midi_baud = uart_init(midi_uart->midi_uart, MIDI_UART_LIB_BAUD_RATE);
+    uart_init(midi_uart->midi_uart, MIDI_UART_LIB_BAUD_RATE);
     uart_set_format(midi_uart->midi_uart, 8, 1, UART_PARITY_NONE);
     uart_set_hw_flow(midi_uart->midi_uart, false, false);
     uart_set_fifo_enabled(midi_uart->midi_uart, false);
