@@ -126,7 +126,7 @@ void *midi_uart_configure(uint8_t uartnum, uint8_t txgpio, uint8_t rxgpio)
 #if MIDI_UART_LIB_NUM_UARTS == 2
     else if (uartnum == 0) {
         midi_uart = &midi_uart0;
-        irq_set_exclusive_handler(midi_uart->midi_uart_irq, on_midi_uart1_irq);
+        irq_set_exclusive_handler(midi_uart->midi_uart_irq, on_midi_uart0_irq);
     }
 #endif
     midi_uart->midi_uart_tx_gpio = txgpio;
