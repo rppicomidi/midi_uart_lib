@@ -35,7 +35,6 @@
 #include "pico/binary_info.h"
 #include "pico/sync.h"
 #include "ring_buffer_lib.h"
-#include "midi_uart_lib_config.h"
 #include "midi_uart_lib.h"
 
 #define MIDI_UART_RING_BUFFER_LENGTH 128
@@ -52,26 +51,19 @@ typedef struct MIDI_UART_S {
     uint8_t midi_uart_tx_buf[MIDI_UART_RING_BUFFER_LENGTH];
 } MIDI_UART_T;
 
-#ifndef MIDI_UART_LIB_NUM_UARTS
-#error "projects that use this library must define MIDI_UART_LIB_NUM_UARTS in midi_uart_lib_config.h"
-#endif
 #ifndef MIDI_UART_LIB_BAUD_RATE
-#error "projects that use this library must define MIDI_UART_LIB_BAUD_RATE in midi_uart_lib_config.h"
+#define MIDI_UART_LIB_BAUD_RATE 31250
 #endif
 
 static void on_midi_uart_irq(MIDI_UART_T *midi_uart);
-#if MIDI_UART_LIB_NUM_UARTS==1
 static MIDI_UART_T midi_uart1;
-#elif MIDI_UART_LIB_NUM_UARTS==2
+
 static MIDI_UART_T midi_uart0, midi_uart1;
 
 static void on_midi_uart0_irq()
 {
     on_midi_uart_irq(&midi_uart0);
 }
-#else
-#error "NEED EITHER 1 OR 2 MIDI_UART_LIB_NUM_UARTS"
-#endif
 
 static void on_midi_uart1_irq()
 {
@@ -108,27 +100,24 @@ static void on_midi_uart_irq(MIDI_UART_T *midi_uart)
 
 void *midi_uart_configure(uint8_t uartnum, uint8_t txgpio, uint8_t rxgpio)
 {
-#if MIDI_UART_LIB_NUM_UARTS == 2
-    assert(uartnum < 2);
-    midi_uart0.midi_uart = uart0;
-    midi_uart0.midi_uart_irq = UART0_IRQ;
-#else
-    assert(uartnum == 1);
-#endif
-    midi_uart1.midi_uart = uart1;
-    midi_uart1.midi_uart_irq = UART1_IRQ;
+    if (uartnum == 0) {
+        midi_uart0.midi_uart = uart0;
+        midi_uart0.midi_uart_irq = UART0_IRQ;
+    }
+    else {
+        midi_uart1.midi_uart = uart1;
+        midi_uart1.midi_uart_irq = UART1_IRQ;
+    }
 
-    MIDI_UART_T *midi_uart;
+    MIDI_UART_T *midi_uart = NULL;
     if (uartnum == 1) {
         midi_uart = &midi_uart1;
         irq_set_exclusive_handler(midi_uart->midi_uart_irq, on_midi_uart1_irq);
     }
-#if MIDI_UART_LIB_NUM_UARTS == 2
     else if (uartnum == 0) {
         midi_uart = &midi_uart0;
         irq_set_exclusive_handler(midi_uart->midi_uart_irq, on_midi_uart0_irq);
     }
-#endif
     midi_uart->midi_uart_tx_gpio = txgpio;
     midi_uart->midi_uart_rx_gpio = rxgpio;
     // Set up the UART hardware
