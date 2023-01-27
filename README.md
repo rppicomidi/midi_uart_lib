@@ -18,8 +18,10 @@ example of the `midi_uart_lib_config.h` file and for an example of how the libra
 is used.
 
 It is up to the application that uses this library to "know" whether or not to
-re-route or disable the stdio UART console (i.e `pico_enable_stdio_uart` in the `CMakeLists.txt` file) depending on which UART is used. By default, UART 0 is
-the stdio UART. The Pico SDK lets you change it to UART 1 or disable it completely.
+re-route or disable the stdio UART console (i.e `pico_enable_stdio_uart` in the `CMakeLists.txt` file) depending on which UART is used. In the Pico SDK, UART 0 is
+the default stdio UART. The Pico SDK lets you change it to UART 1 or disable it completely. You must disable it completely if you use both UARTs for MIDI or
+you will have problems. See the `CMakeLists.txt` file in the [midi2usbhost](https://github.com/rppicomidi/midi2usbhost) project for an example of conditionally
+disabling the stdio UART when UART 0 is used.
 
 Also note that the UART TX pin for MIDI OUT is NOT open drain. For the projects I
 have tried, it has not mattered. Some have reported needing to insert a diode between
