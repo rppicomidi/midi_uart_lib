@@ -67,7 +67,7 @@ static MIDI_UART_T midi_uart0, midi_uart1;
 
 static void on_midi_uart0_irq()
 {
-    on_midi_uart_irq(&midi_uarts0);
+    on_midi_uart_irq(&midi_uart0);
 }
 #else
 #error "NEED EITHER 1 OR 2 MIDI_UART_LIB_NUM_UARTS"
@@ -111,7 +111,7 @@ void *midi_uart_configure(uint8_t uartnum, uint8_t txgpio, uint8_t rxgpio)
 #if MIDI_UART_LIB_NUM_UARTS == 2
     assert(uartnum < 2);
     midi_uart0.midi_uart = uart0;
-    midi_uart0.uart_irq = UART0_IRQ;
+    midi_uart0.midi_uart_irq = UART0_IRQ;
 #else
     assert(uartnum == 1);
 #endif
@@ -126,7 +126,7 @@ void *midi_uart_configure(uint8_t uartnum, uint8_t txgpio, uint8_t rxgpio)
 #if MIDI_UART_LIB_NUM_UARTS == 2
     else if (uartnum == 0) {
         midi_uart = &midi_uart0;
-        irq_set_exclusive_handler(midi_uart->midi_uart_irq, on_midi_uart1_irq);
+        irq_set_exclusive_handler(midi_uart->midi_uart_irq, on_midi_uart0_irq);
     }
 #endif
     midi_uart->midi_uart_tx_gpio = txgpio;
