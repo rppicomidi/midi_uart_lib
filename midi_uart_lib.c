@@ -164,8 +164,7 @@ void midi_uart_drain_tx_buffer(void* instance)
         uint8_t val;
         if ((uart_get_hw(midi_uart->midi_uart)->imsc & UART_UARTIMSC_TXIM_BITS) == 0) {
             // then last transmission is complete. Kick start a new one
-            RING_BUFFER_SIZE_TYPE result = ring_buffer_pop_unsafe(&midi_uart->midi_uart_tx, &val, 1);
-            assert(result == 1);
+            ring_buffer_pop_unsafe(&midi_uart->midi_uart_tx, &val, 1);
             uart_get_hw(midi_uart->midi_uart)->dr = val;
             uart_set_irq_enables(midi_uart->midi_uart, true, true);
         }
