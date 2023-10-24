@@ -1,3 +1,0 @@
-[submodule "lib/ring_buffer_lib"]
-	path = lib/ring_buffer_lib
-	url = https://github.com/rppicomidi/ring_buffer_lib.git

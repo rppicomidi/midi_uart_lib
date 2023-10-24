@@ -4,7 +4,11 @@ Library for using Raspberry Pi Pico UART1 or both UART0 and UART1 for serial por
 If you need more that two serial port MIDI ports, or if you need two serial port MIDI
 ports and a stdio UART console, please consider using [pio_midi_uart_lib](https://github.com/rppicomidi/pio_midi_uart_lib) instead.
 
-Projects that use midi\_uart\_lib must contain a file called `midi_uart_lib_config.h`
+Projects that use midi\_uart\_lib must install [ring_buffer_lib](https://github.com/rppicomidi/ring_buffer_lib) in the same directory as this project. For example, if this project is installed in
+`lib/midi_uart_lib`, then you must also install [ring_buffer_lib](https://github.com/rppicomidi/ring_buffer_lib)
+in the directory `lib/ring_buffer_lib`.
+
+Projects that use midi\_uart\_libcontain a file called `midi_uart_lib_config.h`
 that contains the following code
 
 ```
