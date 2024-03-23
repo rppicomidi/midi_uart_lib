@@ -147,7 +147,7 @@ uint8_t midi_uart_poll_rx_buffer(void *instance, uint8_t* buffer, RING_BUFFER_SI
     return ring_buffer_pop(&midi_uart->midi_uart_rx, buffer, buflen);
 }
 
-uint8_t midi_uart_write_tx_buffer(void* instance, uint8_t* buffer, RING_BUFFER_SIZE_TYPE buflen)
+uint8_t midi_uart_write_tx_buffer(void* instance, const uint8_t* buffer, RING_BUFFER_SIZE_TYPE buflen)
 {
     MIDI_UART_T *midi_uart = (MIDI_UART_T *)instance;
     return ring_buffer_push(&midi_uart->midi_uart_tx, buffer, buflen);

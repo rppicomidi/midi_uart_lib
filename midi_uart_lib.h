@@ -64,7 +64,7 @@ uint8_t midi_uart_poll_rx_buffer(void *instance, uint8_t *buffer, RING_BUFFER_SI
  * @return the number of bytes loaded; may be less than buflen if the buffer is full
  * @note you must call midi_uart_drain_tx_buffer() to actually send the bytes
  */
-uint8_t midi_uart_write_tx_buffer(void *instance, uint8_t *buffer, RING_BUFFER_SIZE_TYPE buflen);
+uint8_t midi_uart_write_tx_buffer(void *instance, const uint8_t *buffer, RING_BUFFER_SIZE_TYPE buflen);
 
 /**
  * @brief start transmitting bytes from the tx buffer if not already doing so
