@@ -32,6 +32,7 @@
 
 
 #include <stdint.h>
+#include "midi_uart_lib_config.h"
 #include "ring_buffer_lib.h"
 #ifdef __cplusplus
 extern "C" {
