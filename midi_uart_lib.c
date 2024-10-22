@@ -156,18 +156,14 @@ uint8_t midi_uart_write_tx_buffer(void* instance, const uint8_t* buffer, RING_BU
 void midi_uart_drain_tx_buffer(void* instance)
 {
     MIDI_UART_T *midi_uart = (MIDI_UART_T *)instance;
-    // disable UART interrupts because checking if still transmitting from the buffer
-    irq_set_enabled(midi_uart->midi_uart_irq, false);
-    // can use the unsafe version of ring_buffer_is_empty_unsafe() because UART IRQ
-    // is disabled
-    if (!ring_buffer_is_empty_unsafe(&midi_uart->midi_uart_tx)) {
+
+    if (!ring_buffer_is_empty(&midi_uart->midi_uart_tx)) {
         uint8_t val;
         if ((uart_get_hw(midi_uart->midi_uart)->imsc & UART_UARTIMSC_TXIM_BITS) == 0) {
             // then last transmission is complete. Kick start a new one
-            ring_buffer_pop_unsafe(&midi_uart->midi_uart_tx, &val, 1);
+            ring_buffer_pop(&midi_uart->midi_uart_tx, &val, 1);
             uart_get_hw(midi_uart->midi_uart)->dr = val;
             uart_set_irq_enables(midi_uart->midi_uart, true, true);
         }
     }
-    irq_set_enabled(midi_uart->midi_uart_irq, true);
 }
